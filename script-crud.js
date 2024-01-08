@@ -12,6 +12,7 @@ let liTarefaSelecionada = null;
 const botaoRemoverConcluidas = document.querySelector(
   "#btn-remover-concluidas"
 );
+const botaoRemoverTodas = document.querySelector("#btn-remover-todas");
 
 let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 
@@ -121,11 +122,20 @@ document.addEventListener("focoFinalizado", () => {
   }
 });
 
-botaoRemoverConcluidas.onclick = () => {
-  const seletor = ".app__section-task-list-item-complete";
+const removerTarefas = (somenteCompletas) => {
+  let seletor = ".app__section-task-list-item";
+
+  if (somenteCompletas) {
+    seletor = ".app__section-task-list-item-complete";
+  }
   document.querySelectorAll(seletor).forEach((tarefa) => {
     tarefa.remove();
   });
-  tarefas = tarefas.filter((tarefa) => !tarefa.completa);
+  tarefas = somenteCompletas
+    ? tarefas.filter((tarefa) => !tarefa.completa)
+    : [];
   atualizarTarefas();
 };
+
+botaoRemoverConcluidas.onclick = () => removerTarefas(true);
+botaoRemoverTodas.onclick = () => removerTarefas(false);
